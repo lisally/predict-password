@@ -34,6 +34,7 @@ namespace predict_password
         {
             Node temp = root;
             string word = "";
+            List<string> results = new List<string>();
             for (int i = 0; i < password.Length; i++)
             {
                 word += password[i];
@@ -54,12 +55,12 @@ namespace predict_password
 
                     for (int j = 0; j < searchQuery.Count(); j++)
                     {
-                        temp.dictionary[password[i]].list.Add(searchQuery[i].Key);
+                        temp.dictionary[password[i]].list.Add(searchQuery[j].Key);
                     }
                 }
+                temp = temp.dictionary[password[i]];
             }
         }
-
 
         public void BuildTrie()
         {
@@ -77,6 +78,8 @@ namespace predict_password
 
             for (int i = 0; i < search.Length; i++)
             {
+                /* Checks if search exists in all of the search character's dictionaries
+                Else return no results. */
                 if (temp.dictionary.ContainsKey(search[i]))
                 {
                     temp = temp.dictionary[search[i]];
@@ -88,6 +91,7 @@ namespace predict_password
                 }
             }
 
+            // If all characters of search string exist in the Trie, search for results.
             if (search == result && search != "")
             {
                 searchResults = temp.list;

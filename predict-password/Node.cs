@@ -13,7 +13,7 @@ namespace predict_password
         public Node()
         {
             this.dictionary = null;
-            this.list = null;
+            this.list = new List<string>();
         }
     }
 }
