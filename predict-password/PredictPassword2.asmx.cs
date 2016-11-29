@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Microsoft.Azure;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Script.Serialization;
 using System.Web.Script.Services;
 using System.Web.Services;
@@ -20,22 +21,38 @@ namespace predict_password
     public class PredictPassword2 : System.Web.Services.WebService
     {
         private static List<string> passwords;
+        private string filePath = System.IO.Path.GetTempPath() + "\\data.txt";
 
         [WebMethod]
-        //public string DownloadData(string filepath)
         public string DownloadData()
 
         {
             passwords = new List<string>();
-            using (StreamReader reader = new StreamReader("C:/Users/iGuest/Downloads/passwords.txt"))
+            File.Delete(this.filePath);
+
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+                CloudConfigurationManager.GetSetting("StorageConnectionString"));
+
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+            CloudBlobContainer container = blobClient.GetContainerReference("info370");
             {
-                while (reader.EndOfStream == false)
+                CloudBlockBlob blob = container.GetBlockBlobReference("passwords.txt");
+
+                using (var fileStream = System.IO.File.OpenWrite(this.filePath))
                 {
-                    string line = reader.ReadLine();
-                    passwords.Add(line);
+                    blob.DownloadToStream(fileStream);
+                }
+
+                using (StreamReader reader = new StreamReader(this.filePath))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        string line = reader.ReadLine();
+                        passwords.Add(line);
+                    }
                 }
             }
-            return "success downloading data";
+            return "success downloading wiki data";
         }
 
 
@@ -56,7 +73,6 @@ namespace predict_password
             {
                 results.Add(searchQuery[i].Key);
             }
-
             return new JavaScriptSerializer().Serialize(results);
         }
     }
