@@ -5,7 +5,7 @@
         
         if (userSearch.length > 0 && userSearch.length < 7) {
             $.ajax({
-                url: "PredictPassword2.asmx/SearchForPasswords",
+                url: "predict.asmx/SearchForPasswords",
                 type: "POST",
                 dataType: "json",
                 data: JSON.stringify({ search: userSearch }),
@@ -28,8 +28,8 @@ function displayResults(result, search) {
         $("#results").append($("<p></p>").append("No predicted passwords for: " + search));
     }
     else {
-        for (var i = 0; i < result.length; i++) {
-            $("#results").append($("<p></p>").append(result[i]));
+        for (var i = 0; i < result.length; i += 2) {
+            $("#results").append($("<p></p>").append(result[i] + "                 frequency: " + result[i+1]));
         }
     }
 }
