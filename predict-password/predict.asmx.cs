@@ -20,7 +20,7 @@ namespace predict_password
     [System.Web.Script.Services.ScriptService]
     public class predict : System.Web.Services.WebService
     {
-        private static List<string> passwords;
+        private List<string> passwords;
         private static Dictionary<string, int> dictionary;
         private string filePath = System.IO.Path.GetTempPath() + "\\data.txt";
 
@@ -38,6 +38,7 @@ namespace predict_password
             CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
             CloudBlobContainer container = blobClient.GetContainerReference("info370");
             {
+                //CloudBlockBlob blob = container.GetBlockBlobReference("password_data.txt");
                 CloudBlockBlob blob = container.GetBlockBlobReference("passwords.txt");
 
                 using (var fileStream = System.IO.File.OpenWrite(this.filePath))
@@ -62,6 +63,8 @@ namespace predict_password
                 {
                     dictionary.Add(searchDictionary[j].Item1, searchDictionary[j].Item2);
                 }
+
+                passwords = null;
 
             }
             return "success downloading data";

@@ -3,9 +3,9 @@
         $("#results").empty();
         var userSearch = $(this).val();
         
-        if (userSearch.length > 0 && userSearch.length < 7) {
+        //if (userSearch.length > 0 && userSearch.length < 7) {
             $.ajax({
-                url: "predict.asmx/SearchForPasswords",
+                url: "predictor.asmx/SearchForPasswords",
                 type: "POST",
                 dataType: "json",
                 data: JSON.stringify({ search: userSearch }),
@@ -16,9 +16,9 @@
                     displayResults(resultArray, userSearch);
                 }
             });
-        } else if (userSearch.length >= 7) {
-            $("#results").append($("<p></p>").append("No predicted passwords for: " + userSearch));
-        }
+        //} else if (userSearch.length >= 7) {
+        //    $("#results").append($("<p></p>").append("No predicted passwords for: " + userSearch));
+        //}
     });
 
 });
